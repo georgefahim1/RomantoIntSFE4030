@@ -1,0 +1,45 @@
+#include <iostream>
+#include <unordered_map>
+#include <stdexcept>
+
+int roman_to_integer(const std::string& s) {
+    std::unordered_map<char, int> roman_numerals = {
+        {'I', 1}, {'V', 5}, {'X', 10},
+        {'L', 50}, {'C', 100}, {'D', 500},
+        {'M', 1000}
+    };
+
+    int result = 0;
+    int prev_value = 0;
+
+    for (auto it = s.rbegin(); it != s.rend(); ++it) {
+        char roman_char = *it;
+        int value = roman_numerals[roman_char];
+
+        if (value == 0) {
+            throw std::invalid_argument("Invalid Roman numeral: " + std::string(1, roman_char));
+        }
+
+        if (value < prev_value) {
+            result -= value;
+        } else {
+            result += value;
+        }
+
+        prev_value = value;
+    }
+
+    return result;
+}
+
+int main() {
+    try {
+        std::cout << roman_to_integer("III") << std::endl;
+        std::cout << roman_to_integer("IX") << std::endl;
+        std::cout << roman_to_integer("XXI") << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+    return 0;
+}
